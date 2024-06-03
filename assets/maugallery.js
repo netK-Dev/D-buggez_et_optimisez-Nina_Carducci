@@ -156,18 +156,18 @@
 
   function filterByTag(target) {
     if (target.classList.contains('active-tag')) {
-      return;
+        return;
     }
     document.querySelector('.active-tag').classList.remove('active', 'active-tag');
-    target.classList.add('active-tag');
+    target.classList.add('active', 'active-tag');
 
     const tag = target.dataset.imagesToggle;
     document.querySelectorAll('.gallery-item').forEach((item) => {
-      const parentColumn = item.closest('.item-column');
-      parentColumn.style.display = 'none';
-      if (tag === 'all' || item.dataset.galleryTag === tag) {
-        parentColumn.style.display = 'block';
-      }
+        const parentColumn = item.closest('.item-column');
+        parentColumn.style.display = 'none';
+        if (tag === 'all' || item.dataset.galleryTag === tag) {
+            parentColumn.style.display = 'block';
+        }
     });
   }
 
