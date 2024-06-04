@@ -40,19 +40,22 @@
 
   function listeners(element, options) {
     element.addEventListener('click', (event) => {
-      if (options.lightBox && event.target.tagName === 'IMG') {
-        openLightBox(event.target, options.lightboxId);
-      }
+        if (options.lightBox && event.target.tagName === 'IMG') {
+            openLightBox(event.target, options.lightboxId);
+        }
     });
 
-    document.querySelector('.gallery').addEventListener('click', (event) => {
-      if (event.target.classList.contains('nav-link')) {
-        filterByTag(event.target);
-      } else if (event.target.classList.contains('mg-prev')) {
-        prevImage(options.lightboxId);
-      } else if (event.target.classList.contains('mg-next')) {
-        nextImage(options.lightboxId);
-      }
+    // Attacher les écouteurs à l'intérieur de la modale
+    document.addEventListener('click', (event) => {
+        if (event.target.classList.contains('nav-link')) {
+            filterByTag(event.target);
+        } else if (event.target.classList.contains('mg-prev')) {
+            console.log('Previous image button clicked');
+            prevImage(options.lightboxId);
+        } else if (event.target.classList.contains('mg-next')) {
+            console.log('Next image button clicked');
+            nextImage(options.lightboxId);
+        }
     });
   }
 
@@ -104,22 +107,32 @@
     }
   }
 
-  function prevImage(lightboxId) {
-    const activeImage = document.querySelector('.lightboxImage').src;
+  function getFilteredImages() {
+    const activeTag = document.querySelector('.active-tag').dataset.imagesToggle;
     const galleryItems = document.querySelectorAll('img.gallery-item');
-    const imagesArray = Array.from(galleryItems);
-    const currentIndex = imagesArray.findIndex(img => img.src === activeImage);
-    const prevIndex = (currentIndex > 0) ? currentIndex - 1 : imagesArray.length - 1;
-    document.querySelector('.lightboxImage').src = imagesArray[prevIndex].src;
+    if (activeTag === 'all') {
+      return Array.from(galleryItems);
+    } else {
+      return Array.from(galleryItems).filter(img => img.dataset.galleryTag === activeTag);
+    }
+  }
+
+  function prevImage(lightboxId) {
+    const lightboxImage = document.querySelector(`#${lightboxId} .lightboxImage`);
+    const activeImageSrc = lightboxImage.src;
+    const filteredImages = getFilteredImages();
+    const currentIndex = filteredImages.findIndex(img => img.src === activeImageSrc);
+    const prevIndex = (currentIndex > 0) ? currentIndex - 1 : filteredImages.length - 1;
+    lightboxImage.src = filteredImages[prevIndex].src;
   }
 
   function nextImage(lightboxId) {
-    const activeImage = document.querySelector('.lightboxImage').src;
-    const galleryItems = document.querySelectorAll('img.gallery-item');
-    const imagesArray = Array.from(galleryItems);
-    const currentIndex = imagesArray.findIndex(img => img.src === activeImage);
-    const nextIndex = (currentIndex < imagesArray.length - 1) ? currentIndex + 1 : 0;
-    document.querySelector('.lightboxImage').src = imagesArray[nextIndex].src;
+    const lightboxImage = document.querySelector(`#${lightboxId} .lightboxImage`);
+    const activeImageSrc = lightboxImage.src;
+    const filteredImages = getFilteredImages();
+    const currentIndex = filteredImages.findIndex(img => img.src === activeImageSrc);
+    const nextIndex = (currentIndex < filteredImages.length - 1) ? currentIndex + 1 : 0;
+    lightboxImage.src = filteredImages[nextIndex].src;
   }
 
   function createLightBox(gallery, lightboxId, navigation) {
@@ -128,9 +141,9 @@
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-body">
-              ${navigation ? '<div class="mg-prev" style="cursor:pointer;position:absolute;top:50%;left:-15px;background:white;"><</div>' : '<span style="display:none;" />'}
+              ${navigation ? '<div class="mg-prev" style="cursor:pointer;position:absolute;top:50%;left:-15px;background:white;">&#9664;</div>' : '<span style="display:none;" />'}
               <img class="lightboxImage img-fluid" alt="Contenu de l\'image affichée dans la modale au clique"/>
-              ${navigation ? '<div class="mg-next" style="cursor:pointer;position:absolute;top:50%;right:-15px;background:white;}">></div>' : '<span style="display:none;" />'}
+              ${navigation ? '<div class="mg-next" style="cursor:pointer;position:absolute;top:50%;right:-15px;background:white;">&#9654;</div>' : '<span style="display:none;" />'}
             </div>
           </div>
         </div>
