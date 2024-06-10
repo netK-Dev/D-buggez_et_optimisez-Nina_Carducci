@@ -201,6 +201,21 @@ body {
 #contact .container {
 	display: flex;
 }
+
+#info {
+	margin-top: 15px;
+	margin-bottom: 15px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 5px;
+}
+#info p,#info h3 {
+	margin: 0;
+	padding: 0;
+}
+
 .picture.right::before {
 	content: ' ';
 	background-color: #BEB45A;
