@@ -172,7 +172,7 @@
         return;
     }
     document.querySelector('.active-tag').classList.remove('active', 'active-tag');
-    target.classList.add('active', 'active-tag');
+    target.classList.add('active', 'active-tag'); //Correction, ajout de la class "active"
 
     const tag = target.dataset.imagesToggle;
     document.querySelectorAll('.gallery-item').forEach((item) => {
